@@ -49,7 +49,7 @@
             <label>Запрос</label>
           </div>
           <div class="grow-wrap">
-            <textarea name="text" id="text" v-model="tempValue.original_otl"></textarea>
+            <textarea name="text" id="text" v-model="tempValue.queryString"></textarea>
           </div>
         </div>
       </div>
@@ -73,7 +73,7 @@ export default {
   data() {
     return {
       tempValue: {
-        original_otl: '',
+        queryString: '',
         cache_ttl: 60,
         type: 'otl',
       },
@@ -92,7 +92,7 @@ export default {
       this.clearTempValue();
     },
     save() {
-      if (!this.tempValue.original_otl) return;
+      if (!this.tempValue.queryString) return;
 
       if (this.tempValue.cache_ttl) {
         this.tempValue.cache_ttl = Number.parseInt(this.tempValue.cache_ttl);
@@ -100,13 +100,13 @@ export default {
       } else delete this.tempValue.cache_ttl;
 
       if (!this.datasourceName && !this.tempValue.name) return;
-      this.tempValue.original_otl.trim();
+      this.tempValue.queryString.trim();
       this.$emit('saveDatasource', this.tempValue);
       this.leaveEditMode();
     },
     clearTempValue() {
       this.tempValue = {
-        original_otl: '',
+        queryString: '',
         cache_ttl: 60,
       };
     },

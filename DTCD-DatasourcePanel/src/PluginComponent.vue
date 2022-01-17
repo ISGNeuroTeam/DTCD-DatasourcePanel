@@ -45,7 +45,7 @@ export default {
   methods: {
     editDatasource(datasource) {
       this.tempDatasource = {
-        ...this.datasources[datasource].initData,
+        ...this.datasources[datasource].datasourceParams,
       };
       this.editableDatasource = datasource;
       this.editMode = true;
