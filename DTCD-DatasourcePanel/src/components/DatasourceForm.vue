@@ -13,14 +13,14 @@
         >
           <path
             d="M16 10H4"
-            stroke="#000"
+            stroke="var(--title)"
             stroke-width="2"
             stroke-linecap="round"
             stroke-linejoin="round"
           />
           <path
             d="M10 16L4 10L10 4"
-            stroke="#000"
+            stroke="var(--title)"
             stroke-width="2"
             stroke-linecap="round"
             stroke-linejoin="round"
@@ -56,9 +56,7 @@
     </div>
 
     <div class="modal-footer">
-      <button type="button" class="footer-btn" @click="save">
-        {{ datasourceName ? 'Сохранить' : 'Создать' }}
-      </button>
+      <base-button @click="save"> {{ datasourceName ? 'Сохранить' : 'Создать' }}</base-button>
     </div>
   </div>
 </template>
@@ -116,10 +114,6 @@ export default {
 
 <style lang="scss" scoped>
 .datasource-form {
-  background: #ffffff;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-  /* height: 90vh;
-  width: 90vh; */
   display: flex;
   flex-direction: column;
   position: relative;
@@ -133,41 +127,23 @@ export default {
 .modal-footer {
   padding: 15px;
   display: flex;
+  box-sizing: border-box;
 }
 
 .modal-header {
   position: relative;
-  border-bottom: 1px solid #eeeeee;
+  border-bottom: 1px solid var(--border);
 }
 
 .modal-footer {
-  /* position: absolute;
-  bottom: 0;
-  right: 0; */
   width: 100%;
-  border-top: 1px solid #eeeeee;
+  border-top: 1px solid var(--border);
   justify-content: flex-end;
 }
 
 .modal-body {
   position: relative;
   padding: 20px;
-}
-
-.btn-close {
-  position: absolute;
-  top: 0;
-  right: 5px;
-  border: none;
-  font-size: 20px;
-  padding: 10px;
-  cursor: pointer;
-  font-weight: bold;
-  color: #757575;
-  background: transparent;
-}
-.btn-close:hover {
-  color: #2196f3;
 }
 
 .footer-btn {
@@ -200,14 +176,14 @@ export default {
 .grow-wrap > textarea,
 .grow-wrap::after {
   padding: 0.5rem;
-  border: 1px solid rgb(199, 208, 217);
+  border: 1px solid var(--border);
   font: inherit;
   grid-area: 1 / 1 / 2 / 2;
 }
 
 .input {
   padding: 0.5rem;
-  border: 1px solid rgb(199, 208, 217);
+  border: 1px solid var(--border);
   width: 200px;
 }
 .label-wrapper {
@@ -226,7 +202,7 @@ export default {
   margin-right: 10px;
 
   &:hover {
-    background-color: #d4d1d1;
+    background-color: var(--border_secondary);
   }
 }
 </style>
