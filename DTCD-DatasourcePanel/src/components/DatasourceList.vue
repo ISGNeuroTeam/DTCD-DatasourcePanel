@@ -115,9 +115,6 @@ export default {
       );
     },
   },
-  mounted() {
-    console.log(this.styleSystem);
-  },
   methods: {
     editDatasource(datasource) {
       this.$emit('editDatasource', datasource);
@@ -178,6 +175,7 @@ export default {
     .datasource-title {
       display: flex;
       align-items: center;
+      font-weight: 700;
 
       .status-icon {
         margin-right: 6px;

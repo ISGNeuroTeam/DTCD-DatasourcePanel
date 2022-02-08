@@ -3,54 +3,46 @@
     <div>
       <div class="modal-header">
         <svg
-          width="20"
-          height="20"
-          viewBox="0 0 20 20"
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
           class="button-icon"
+          :style="{ marginRight: '6px' }"
           @click="leaveEditMode"
         >
           <path
-            d="M16 10H4"
-            stroke="var(--title)"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          />
-          <path
-            d="M10 16L4 10L10 4"
-            stroke="var(--title)"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
+            d="M15.5358 3.51514L7.05078 12.0001L15.5358 20.4851L16.9508 19.0711L9.87878 12.0001L16.9508 4.92914L15.5358 3.51514Z"
+            fill="var(--button_primary)"
           />
         </svg>
-
-        <slot name="header">
-          {{ datasourceName ? 'Редактирование' : 'Создание' }} источника данных</slot
-        >
+        {{ datasourceName ? 'Редактирование' : 'Создание' }} источника данных
       </div>
       <div class="modal-body">
         <div v-if="!datasourceName" class="form-field">
-          <div class="label-wrapper">
-            <label>Название</label>
-          </div>
-          <input type="text" class="input" v-model="tempValue.name" />
+          <base-input
+            label="Название"
+            type="text"
+            placeholder="Введите название"
+            ref="datasourceName"
+          ></base-input>
         </div>
         <div class="form-field">
-          <div class="label-wrapper">
-            <label>TTL</label>
-          </div>
-          <input type="number" class="input" v-model="tempValue.cache_ttl" />
+          <base-input
+            label="TTL"
+            type="number"
+            placeholder="Введите значение ttl"
+            ref="ttl"
+          ></base-input>
         </div>
         <div class="form-field">
-          <div class="label-wrapper">
-            <label>Запрос</label>
-          </div>
-          <div class="grow-wrap">
-            <textarea name="text" id="text" v-model="tempValue.queryString"></textarea>
-          </div>
+          <base-textarea
+            label="Запрос"
+            placeholder="Введите запрос"
+            ref="query"
+            :style="{ width: '100%' }"
+          ></base-textarea>
         </div>
       </div>
     </div>
@@ -83,6 +75,8 @@ export default {
         ...this.datasource,
       };
     }
+    this.$refs.ttl.value = this.tempValue.cache_ttl;
+    this.$refs.query.value = this.tempValue.queryString;
   },
   methods: {
     leaveEditMode() {
@@ -90,14 +84,20 @@ export default {
       this.clearTempValue();
     },
     save() {
-      if (!this.tempValue.queryString) return;
+      if (!this.$refs.query.value) return;
 
-      if (this.tempValue.cache_ttl) {
-        this.tempValue.cache_ttl = Number.parseInt(this.tempValue.cache_ttl);
+      this.tempValue.queryString = this.$refs.query.value;
+
+      if (this.$refs.ttl.value) {
+        this.tempValue.cache_ttl = Number.parseInt(this.$refs.ttl.value);
         if (this.tempValue.cache_ttl < 1) return;
       } else delete this.tempValue.cache_ttl;
 
-      if (!this.datasourceName && !this.tempValue.name) return;
+      if (!this.datasourceName) {
+        if (!this.$refs.datasourceName.value) return;
+        this.tempValue.name = this.$refs.datasourceName.value;
+      }
+
       this.tempValue.queryString.trim();
       this.$emit('saveDatasource', this.tempValue);
       this.leaveEditMode();
@@ -132,12 +132,14 @@ export default {
 
 .modal-header {
   position: relative;
-  border-bottom: 1px solid var(--border);
+  align-items: center;
+  font-size: 17px;
+  font-weight: 700;
+  line-height: 22px;
 }
 
 .modal-footer {
   width: 100%;
-  border-top: 1px solid var(--border);
   justify-content: flex-end;
 }
 
@@ -159,26 +161,6 @@ export default {
 .modal-fade-enter-active,
 .modal-fade-leave-active {
   transition: opacity 0.5s ease;
-}
-
-.grow-wrap {
-  display: grid;
-}
-.grow-wrap::after {
-  content: attr(data-replicated-value) ' ';
-  white-space: pre-wrap;
-  visibility: hidden;
-}
-.grow-wrap > textarea {
-  resize: none;
-  overflow: hidden;
-}
-.grow-wrap > textarea,
-.grow-wrap::after {
-  padding: 0.5rem;
-  border: 1px solid var(--border);
-  font: inherit;
-  grid-area: 1 / 1 / 2 / 2;
 }
 
 .input {
