@@ -1,5 +1,5 @@
 <template>
-  <div style="height: 100%">
+  <div style="height: 100%" class="panel-wrapper">
     <DatasourceList
       v-if="!editMode"
       :datasources="datasources"
@@ -38,37 +38,64 @@ export default {
   },
   mounted() {
     this.datasources = this.datasourceSystem.getDataSourceList();
+    this.logSystem.debug(`Loading datasources to panel: ${JSON.stringify(this.datasources)}`);
     if (this.$root.isModal) {
+      this.logSystem.debug(`Opening panel in modal mode`);
       this.editMode = true;
     }
   },
   methods: {
     editDatasource(datasource) {
       this.tempDatasource = {
-        ...this.datasources[datasource].initData,
+        ...this.datasources[datasource].datasourceParams,
       };
+      this.logSystem.debug(
+        `Editing datasource '${datasource}': ${JSON.stringify(this.tempDatasource)}`
+      );
       this.editableDatasource = datasource;
-      this.editMode = true;
+      this.createDatasource();
     },
     createDatasource() {
+      this.logSystem.debug(`Switching to editMode`);
       this.editMode = true;
     },
     leaveEditMode() {
+      this.logSystem.debug(`Switching to view mode`);
       this.editMode = false;
       this.editableDatasource = '';
       this.tempDatasource = {};
     },
     saveDatasource(datasourceObject) {
-      if (datasourceObject.name) {
-        this.datasourceSystem.createDataSource(datasourceObject);
-      } else this.datasourceSystem.editDataSource(this.editableDatasource, datasourceObject);
+      const { name, type } = datasourceObject;
+      delete datasourceObject.name;
+      delete datasourceObject.type;
+      if (name) {
+        this.logSystem.debug(
+          `Creating new datasource '${name}' with params: ${JSON.stringify(datasourceObject)}`
+        );
+        this.datasourceSystem.createDataSource(name, type, datasourceObject);
+      } else {
+        this.logSystem.debug(
+          `Saving existing datasource '${
+            this.editableDatasource
+          }' with new params: ${JSON.stringify(datasourceObject)}`
+        );
+        this.datasourceSystem.editDataSource(this.editableDatasource, datasourceObject);
+      }
       this.datasources = Object.assign({}, this.datasourceSystem.getDataSourceList());
     },
     deleteDatasource(datasource) {
-      this.logSystem.info(`Deleting datasource: '${datasource}'`);
+      this.logSystem.debug(`Deleting datasource: '${datasource}'`);
       this.datasourceSystem.removeDataSource(datasource);
       this.datasources = Object.assign({}, this.datasourceSystem.getDataSourceList());
     },
   },
 };
 </script>
+
+<style lang="scss" scoped>
+.panel-wrapper {
+  background-color: var(--background_main);
+  color: var(--text_main);
+}
+</style>
