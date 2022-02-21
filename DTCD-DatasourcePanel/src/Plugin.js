@@ -17,21 +17,21 @@ export class Plugin extends PanelPlugin {
   constructor(guid, selector, isModal) {
     super();
 
-    const logSystem = new LogSystemAdapter('0.4.0', guid, pluginMeta.name);
+    const logSystem = new LogSystemAdapter('0.5.0', guid, pluginMeta.name);
     logSystem.info(`Start instantiation of ${pluginMeta.name} plugin`);
     logSystem.debug(`Create LogSystemAdapter instance in ${pluginMeta.name} plugin`);
 
     const VueJS = this.getDependence('Vue');
     logSystem.debug(`Get Vue dependence in ${pluginMeta.name} plugin`);
 
-    const eventSystem = new EventSystemAdapter('0.3.0', guid);
+    const eventSystem = new EventSystemAdapter('0.4.0', guid);
     logSystem.debug(`Create EventSystemAdapter instance in ${pluginMeta.name} plugin`);
     eventSystem.registerPluginInstance(this, []);
 
-    const datasourceSystem = new DataSourceSystemAdapter('0.1.0');
+    const datasourceSystem = new DataSourceSystemAdapter('0.2.0');
     logSystem.debug(`Create DataSourceSystemAdapter instance in ${pluginMeta.name} plugin`);
 
-    this.styleSystem = new StyleSystemAdapter('0.3.1');
+    this.styleSystem = new StyleSystemAdapter('0.4.0');
 
     const data = {
       guid,
