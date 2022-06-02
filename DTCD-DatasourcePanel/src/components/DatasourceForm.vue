@@ -2,21 +2,10 @@
   <div class="datasource-form">
     <div>
       <div class="modal-header">
-        <svg
-          width="24"
-          height="24"
-          viewBox="0 0 24 24"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-          class="button-icon"
+        <span 
           :style="{ marginRight: '6px' }"
           @click="leaveEditMode"
-        >
-          <path
-            d="M15.5358 3.51514L7.05078 12.0001L15.5358 20.4851L16.9508 19.0711L9.87878 12.0001L16.9508 4.92914L15.5358 3.51514Z"
-            fill="var(--button_primary)"
-          />
-        </svg>
+          class="button-icon FontIcon name_chevronBigDown rotate_90 size_md"></span>
         {{ datasourceName ? 'Редактирование' : 'Создание' }} источника данных
       </div>
       <div class="modal-body">
