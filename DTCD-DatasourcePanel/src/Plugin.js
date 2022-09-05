@@ -13,6 +13,12 @@ export class Plugin extends PanelPlugin {
   static getRegistrationMeta() {
     return pluginMeta;
   }
+  #config = {
+    autorun: false,
+    runOnTokenChange: false,
+  };
+
+  #datasourceAdapter;
 
   constructor(guid, selector, isModal) {
     super();
@@ -28,7 +34,7 @@ export class Plugin extends PanelPlugin {
     logSystem.debug(`Create EventSystemAdapter instance in ${pluginMeta.name} plugin`);
     eventSystem.registerPluginInstance(this, []);
 
-    const datasourceSystem = new DataSourceSystemAdapter('0.2.0');
+    this.#datasourceAdapter = new DataSourceSystemAdapter('0.2.0');
     logSystem.debug(`Create DataSourceSystemAdapter instance in ${pluginMeta.name} plugin`);
 
     this.styleSystem = new StyleSystemAdapter('0.4.0');
@@ -37,7 +43,7 @@ export class Plugin extends PanelPlugin {
       guid,
       logSystem,
       eventSystem,
-      datasourceSystem,
+      datasourceSystem: this.#datasourceAdapter,
       isModal,
       styleSystem: this.styleSystem,
     };
@@ -62,5 +68,51 @@ export class Plugin extends PanelPlugin {
 
   processThemeUpdateEvent(eventData) {
     this.styleSystem.setVariablesToElement(this.vue.$el, this.styleSystem.getCurrentTheme());
+  }
+  setPluginConfig(config = {}) {
+    const configProps = Object.keys(this.#config);
+
+    for (const [prop, value] of Object.entries(config)) {
+      if (!configProps.includes(prop)) continue;
+      this.#datasourceAdapter[prop] = value;
+      this.#config[prop] = value;
+    }
+  }
+
+  getPluginConfig() {
+    return { ...this.#config };
+  }
+
+  setFormSettings(config) {
+    this.setPluginConfig(config);
+  }
+
+  getFormSettings() {
+    return {
+      fields: [
+        {
+          component: 'title',
+          propValue: 'Общие настройки',
+        },
+        {
+          component: 'title',
+          propValue: 'Настройки системы',
+        },
+        {
+          component: 'switch',
+          propName: 'autorun',
+          attrs: {
+            label: 'Запускать источники данных при загрузке дашборда',
+          },
+        },
+        {
+          component: 'switch',
+          propName: 'runOnTokenChange',
+          attrs: {
+            label: 'Запускать источники данных при изменении токена',
+          },
+        },
+      ],
+    };
   }
 }
