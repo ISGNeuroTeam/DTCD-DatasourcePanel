@@ -7,10 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [UNRELEASED]
 
 ### Added
-- added runDatasource btn
-- added runAllDatasource btn
-- added switch runOnTokenChange 
-- added switch autorun
+* added runDatasource btn
+* added runAllDatasource btn
+* added switch runOnTokenChange
+* added switch autorun
 
 ## [0.3.0]
 
