@@ -3,6 +3,7 @@
     <DatasourceList
       v-if="!editMode"
       :datasources="datasources"
+      @runDataSource="runDataSource"
       @createDatasource="createDatasource"
       @editDatasource="editDatasource"
       @deleteDatasource="deleteDatasource"
@@ -88,6 +89,9 @@ export default {
       this.logSystem.debug(`Deleting datasource: '${datasource}'`);
       this.datasourceSystem.removeDataSource(datasource);
       this.datasources = Object.assign({}, this.datasourceSystem.getDataSourceList());
+    },
+    runDataSource(name) {
+      this.datasourceSystem.runDataSource(name);
     },
   },
 };

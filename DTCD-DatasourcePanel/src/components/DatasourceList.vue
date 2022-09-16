@@ -7,6 +7,10 @@
           <option value="10">10</option>
           <option value="20">20</option>
         </select> -->
+        <span
+            @click="runAllDataSource()"
+            class="button-icon FontIcon name_repeat size_md"
+        />
       </div>
       <div class="right-block">
         {{ currentPage * rowLimit + 1 }} -
@@ -15,28 +19,45 @@
         <span 
           @click="previousPage"
           :class="currentPage === 0 ? 'inactive-arrow' : 'active-arrow'"
-          class="button-icon FontIcon name_chevronBigDown rotate_90 size_md"></span>
+          class="button-icon FontIcon name_chevronBigDown rotate_90 size_md"
+        />
         <span 
           @click="nextPage"
           :class="currentPage === pageCount - 1 ? 'inactive-arrow' : 'active-arrow'"
-          class="button-icon FontIcon name_chevronBigDown rotate_270 size_md"></span>
+          class="button-icon FontIcon name_chevronBigDown rotate_270 size_md"
+        />
 
         <base-button size="small" @click="createDatasource">Создать</base-button>
       </div>
     </div>
-    <div class="datasource-item" v-for="datasource in datasourcesToShow" :key="datasource">
+    <div
+        v-for="datasource in datasourcesToShow"
+        :key="datasource"
+        class="datasource-item"
+    >
       <div class="datasource-title">
-        <StatusCircle :color="statusColors[datasources[datasource].status]" class="status-icon" />
-        <div>{{ datasource }}</div>
+        <StatusCircle
+          :color="statusColors[datasources[datasource].status]"
+          class="status-icon"
+        />
+        <div>
+          {{ datasource }}
+        </div>
       </div>
 
       <div class="button-block">
         <span 
+          @click="runDataSource(datasource)"
+          class="button-icon FontIcon name_playArrow size_md"
+        />
+        <span
           @click="editDatasource(datasource)"
-          class="button-icon FontIcon name_edit size_md"></span>
+          class="button-icon FontIcon name_edit size_md"
+        />
         <span 
           @click="deleteDatasource(datasource)"
-          class="button-icon FontIcon name_trashFull size_md"></span>
+          class="button-icon FontIcon name_trashFull size_md"
+        />
       </div>
     </div>
   </div>
@@ -88,6 +109,14 @@ export default {
     },
     previousPage() {
       if (this.currentPage > 0) this.currentPage--;
+    },
+    runDataSource(datasource) {
+      this.$emit('runDataSource', datasource)
+    },
+    runAllDataSource() {
+      this.datasourcesToShow.forEach((dataSource) => {
+        this.runDataSource(dataSource);
+      });
     },
   },
 };
