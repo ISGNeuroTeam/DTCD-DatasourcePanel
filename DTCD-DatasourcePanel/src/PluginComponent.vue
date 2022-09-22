@@ -32,6 +32,10 @@ export default {
       eventSystem: $root.eventSystem,
       datasourceSystem: $root.datasourceSystem,
       datasources: {},
+      config: {
+        autorun: false,
+        runOnTokenChange: false,
+      },
       editMode: false,
       tempDatasource: {},
       editableDatasource: '',
@@ -45,6 +49,7 @@ export default {
       this.editMode = true;
     }
   },
+
   methods: {
     editDatasource(datasource) {
       this.tempDatasource = {
