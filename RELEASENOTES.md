@@ -1,3 +1,9 @@
+# [0.5.0] - 2022-09-30
+
+### Fixed
+
+- Sync Datasource panels by `autorun` and `runOnTokenChange` params
+
 # [0.4.0] - 2022-09-12
 
 ### Added

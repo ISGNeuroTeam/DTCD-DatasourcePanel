@@ -14,11 +14,13 @@ export class Plugin extends PanelPlugin {
     return pluginMeta;
   }
   #config = {
-    autorun: false,
-    runOnTokenChange: false,
+    // autorun: true,
+    // runOnTokenChange: false,
   };
 
   #datasourceAdapter;
+
+  #vueComponent;
 
   constructor(guid, selector, isModal) {
     super();
@@ -37,6 +39,20 @@ export class Plugin extends PanelPlugin {
     this.#datasourceAdapter = new DataSourceSystemAdapter('0.2.0');
     logSystem.debug(`Create DataSourceSystemAdapter instance in ${pluginMeta.name} plugin`);
 
+    this.#config.autorun = {
+      get: () => this.#datasourceAdapter.autorun,
+      set: (value) => {
+        this.#datasourceAdapter.autorun = value;
+      },
+    };
+
+    this.#config.runOnTokenChange = {
+      get: () => this.#datasourceAdapter.runOnTokenChange,
+      set: (value) => {
+        this.#datasourceAdapter.runOnTokenChange = value;
+      }
+    };
+
     this.styleSystem = new StyleSystemAdapter('0.4.0');
 
     const data = {
@@ -45,11 +61,12 @@ export class Plugin extends PanelPlugin {
       eventSystem,
       datasourceSystem: this.#datasourceAdapter,
       isModal,
+      config: this.#config,
       styleSystem: this.styleSystem,
     };
 
     logSystem.debug(`Creating Vue instance in ${pluginMeta.name} plugin`);
-    this.vue = new VueJS.default({
+    this.#vueComponent = new VueJS.default({
       data: () => data,
       render: h => h(PluginComponent),
     }).$mount(selector);
@@ -61,26 +78,31 @@ export class Plugin extends PanelPlugin {
       'processThemeUpdateEvent'
     );
 
-    this.styleSystem.setVariablesToElement(this.vue.$el, this.styleSystem.getCurrentTheme());
+    this.styleSystem.setVariablesToElement(this.#vueComponent.$el, this.styleSystem.getCurrentTheme());
 
     logSystem.info(`End of instantiation of ${pluginMeta.name} plugin`);
   }
 
   processThemeUpdateEvent(eventData) {
-    this.styleSystem.setVariablesToElement(this.vue.$el, this.styleSystem.getCurrentTheme());
+    this.styleSystem.setVariablesToElement(this.#vueComponent.$el, this.styleSystem.getCurrentTheme());
   }
   setPluginConfig(config = {}) {
     const configProps = Object.keys(this.#config);
-
     for (const [prop, value] of Object.entries(config)) {
       if (!configProps.includes(prop)) continue;
       this.#datasourceAdapter[prop] = value;
-      this.#config[prop] = value;
+      this.#vueComponent.config[prop] = value;
     }
   }
 
   getPluginConfig() {
-    return { ...this.#config };
+    const pluginConfig = {};
+    Object.entries(this.#config).forEach(([key]) => {
+      if (typeof this.#datasourceAdapter[key] !== 'undefined') {
+        pluginConfig[key] = this.#datasourceAdapter[key];
+      }
+    });
+    return pluginConfig;
   }
 
   setFormSettings(config) {
