@@ -114,7 +114,7 @@ export default {
 
 .modal-header,
 .modal-footer {
-  padding: 15px;
+  padding: 10px;
   display: flex;
   box-sizing: border-box;
 }
@@ -134,7 +134,7 @@ export default {
 
 .modal-body {
   position: relative;
-  padding: 20px;
+  padding: 10px;
 }
 
 .footer-btn {
@@ -165,6 +165,10 @@ export default {
 }
 .form-field {
   margin-bottom: 10px;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
 }
 
 .button-icon {
