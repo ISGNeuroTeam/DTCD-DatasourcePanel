@@ -1,3 +1,9 @@
+# [0.6.0] - 2022-11-02
+
+### Changed
+
+- Some paddings in panel elements
+
 # [0.5.0] - 2022-09-30
 
 ### Fixed
