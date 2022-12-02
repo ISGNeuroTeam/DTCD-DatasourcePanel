@@ -32,6 +32,7 @@
             ref="query"
             :style="{ width: '100%' }"
             theme="resize_off"
+            data-autoheight
           ></base-textarea>
         </div>
       </div>
@@ -67,7 +68,6 @@ export default {
     }
     this.$refs.ttl.value = this.tempValue.cache_ttl;
     this.$refs.query.value = this.tempValue.queryString;
-    this.$refs.query.setAttribute('data-autoheight', '');
   },
   methods: {
     leaveEditMode() {
