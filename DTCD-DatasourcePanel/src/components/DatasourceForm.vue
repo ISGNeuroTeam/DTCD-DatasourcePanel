@@ -31,6 +31,8 @@
             placeholder="Введите запрос"
             ref="query"
             :style="{ width: '100%' }"
+            theme="resize_off"
+            data-autoheight
           ></base-textarea>
         </div>
       </div>
