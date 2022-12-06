@@ -138,13 +138,17 @@ export default {
   }
   .header {
     display: flex;
-    padding: 5px 10px;
+    flex-wrap: wrap;
+    gap: 10px;
+    padding: 10px;
 
     justify-content: space-between;
 
     .right-block {
       display: flex;
       align-items: center;
+      gap: 5px;
+      flex-wrap: wrap;
 
       .active-arrow {
         color: var(--button_primary);
