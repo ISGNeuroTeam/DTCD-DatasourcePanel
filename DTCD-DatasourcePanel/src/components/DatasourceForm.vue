@@ -5,16 +5,18 @@
         <span 
           :style="{ marginRight: '6px' }"
           @click="leaveEditMode"
-          class="button-icon FontIcon name_chevronBigDown rotate_90 size_md"></span>
-        {{ datasourceName ? 'Редактирование' : 'Создание' }} источника данных
+          class="button-icon FontIcon name_chevronBigDown rotate_90 size_md"
+        ></span>
+        {{ dsFormData.name ? 'Редактирование' : 'Создание' }} источника данных
       </div>
       <div class="modal-body">
-        <div v-if="!datasourceName" class="form-field">
+        <div v-if="!dsFormData.name" class="form-field">
           <base-input
             label="Название"
             type="text"
             placeholder="Введите название"
-            ref="datasourceName"
+            :value="dsFormData.name"
+            @input="(event) => {this.dsFormData.name = event.target.value}"
           ></base-input>
         </div>
         <div class="form-field">
@@ -23,6 +25,12 @@
             type="number"
             placeholder="Введите значение ttl"
             ref="ttl"
+            :value="dsFormData.cache_ttl"
+            @input="(event) => {
+              this.dsFormData.cache_ttl = event.target.value
+                                        ? Number.parseInt(event.target.value)
+                                        : 0;
+            }"
           ></base-input>
         </div>
         <div class="form-field">
@@ -30,7 +38,8 @@
             label="Запрос"
             placeholder="Введите запрос"
             ref="query"
-            :style="{ width: '100%' }"
+            :value="dsFormData.queryString"
+            @input="(event) => {this.dsFormData.queryString = event.target.value}"
             theme="resize_off"
             data-autoheight
           ></base-textarea>
@@ -39,7 +48,7 @@
     </div>
 
     <div class="modal-footer">
-      <base-button @click="save"> {{ datasourceName ? 'Сохранить' : 'Создать' }}</base-button>
+      <base-button @click="save"> {{ dsFormData.name ? 'Сохранить' : 'Создать' }}</base-button>
     </div>
   </div>
 </template>
@@ -52,49 +61,35 @@ export default {
     datasourceName: String,
   },
   data() {
+    if (!this.datasource instanceof Object) this.datasource = {};  
     return {
-      tempValue: {
+      dsFormData: {
+        name: this.datasourceName || '',
         queryString: '',
         cache_ttl: 60,
         type: 'otl',
+        ...this.datasource,
       },
     };
-  },
-  mounted() {
-    if (this.datasourceName) {
-      this.tempValue = {
-        ...this.datasource,
-      };
-    }
-    this.$refs.ttl.value = this.tempValue.cache_ttl;
-    this.$refs.query.value = this.tempValue.queryString;
   },
   methods: {
     leaveEditMode() {
       this.$emit('leaveEditMode');
-      this.clearTempValue();
+      this.resetForm();
     },
     save() {
-      if (!this.$refs.query.value) return;
+      if (!this.dsFormData.name) return;
+      if (this.dsFormData.cache_ttl < 1) return;
+      if (!this.dsFormData.queryString) return;
 
-      this.tempValue.queryString = this.$refs.query.value;
-
-      if (this.$refs.ttl.value) {
-        this.tempValue.cache_ttl = Number.parseInt(this.$refs.ttl.value);
-        if (this.tempValue.cache_ttl < 1) return;
-      } else delete this.tempValue.cache_ttl;
-
-      if (!this.datasourceName) {
-        if (!this.$refs.datasourceName.value) return;
-        this.tempValue.name = this.$refs.datasourceName.value;
-      }
-
-      this.tempValue.queryString.trim();
-      this.$emit('saveDatasource', this.tempValue);
+      this.dsFormData.name.trim();
+      this.dsFormData.queryString.trim();
+      this.$emit('saveDatasource', this.dsFormData);
       this.leaveEditMode();
     },
-    clearTempValue() {
-      this.tempValue = {
+    resetForm() {
+      this.dsFormData = {
+        name: '',
         queryString: '',
         cache_ttl: 60,
       };
