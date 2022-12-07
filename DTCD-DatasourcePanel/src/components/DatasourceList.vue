@@ -36,10 +36,7 @@
         class="datasource-item"
     >
       <div class="datasource-title">
-        <StatusCircle
-          :color="statusColors[datasources[datasource].status]"
-          class="status-icon"
-        />
+        <StatusCircle :type="datasources[datasource].status"/>
         <div>
           {{ datasource }}
         </div>
@@ -71,16 +68,10 @@ export default {
   props: {
     datasources: { type: Array, default: [] },
   },
-  data({ $root }) {
+  data() {
     return {
-      styleSystem: $root.styleSystem,
       currentPage: 0,
       rowLimit: 10,
-      statusColors: {
-        failed: '#FF3B30',
-        success: '#4CD964',
-        new: '#F8B407',
-      },
     };
   },
   computed: {
@@ -161,9 +152,11 @@ export default {
   }
 
   .datasource-item {
-    padding: 5px 10px;
     display: flex;
     justify-content: space-between;
+    flex-wrap: wrap;
+    column-gap: 10px;
+    padding: 5px 10px;
     box-shadow: inset 0px -1px 0px var(--border);
 
     &:hover {
@@ -172,12 +165,15 @@ export default {
 
     .datasource-title {
       display: flex;
+      gap: 6px;
       align-items: center;
       font-weight: 700;
+    }
 
-      .status-icon {
-        margin-right: 6px;
-      }
+    .button-block {
+      display: flex;
+      align-items: center;
+      gap: 5px;
     }
   }
 }
