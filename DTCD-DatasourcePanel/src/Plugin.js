@@ -1,6 +1,3 @@
-import pluginMeta from './Plugin.Meta';
-import PluginComponent from './PluginComponent.vue';
-
 import {
   PanelPlugin,
   LogSystemAdapter,
@@ -8,6 +5,9 @@ import {
   DataSourceSystemAdapter,
   StyleSystemAdapter,
 } from './../../DTCD-SDK/index';
+
+import pluginMeta from './Plugin.Meta';
+import PluginComponent from './PluginComponent.vue';
 
 export class Plugin extends PanelPlugin {
   static getRegistrationMeta() {
@@ -63,6 +63,8 @@ export class Plugin extends PanelPlugin {
       isModal,
       config: this.#config,
       styleSystem: this.styleSystem,
+
+      editMode: false,
     };
 
     logSystem.debug(`Creating Vue instance in ${pluginMeta.name} plugin`);
@@ -136,5 +138,24 @@ export class Plugin extends PanelPlugin {
         },
       ],
     };
+  }
+
+  getState() {
+    return {
+      editMode: this.#vueComponent.editMode,
+    };
+  }
+
+  setState(newState) {
+    if (typeof newState !== 'object' ) return;
+
+    const vueNamesFields = [
+      'editMode',
+    ];
+
+    for (const [prop, value] of Object.entries(newState)) {
+      if (!vueNamesFields.includes(prop)) continue;
+      this.#vueComponent[prop] = value;
+    }
   }
 }

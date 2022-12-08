@@ -61,7 +61,13 @@ export default {
     datasourceName: String,
   },
   data() {
-    if (!this.datasource instanceof Object) this.datasource = {};  
+    const data = {
+      name: this.datasourceName || '',
+      queryString: '',
+      cache_ttl: 60,
+      type: 'otl',
+    };
+    if (this.datasource instanceof Object) this.datasource = {};
     return {
       dsFormData: {
         name: this.datasourceName || '',

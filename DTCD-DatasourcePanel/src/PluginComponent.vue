@@ -1,7 +1,7 @@
 <template>
   <div style="height: 100%" class="panel-wrapper">
     <DatasourceList
-      v-if="!editMode"
+      v-if="!$root.editMode"
       :datasources="datasources"
       @runDataSource="runDataSource"
       @createDatasource="createDatasource"
@@ -36,7 +36,6 @@ export default {
         autorun: false,
         runOnTokenChange: false,
       },
-      editMode: false,
       tempDatasource: {},
       editableDatasource: '',
     };
@@ -46,7 +45,7 @@ export default {
     this.logSystem.debug(`Loading datasources to panel: ${JSON.stringify(this.datasources)}`);
     if (this.$root.isModal) {
       this.logSystem.debug(`Opening panel in modal mode`);
-      this.editMode = true;
+      this.$root.editMode = true;
     }
   },
 
@@ -63,11 +62,11 @@ export default {
     },
     createDatasource() {
       this.logSystem.debug(`Switching to editMode`);
-      this.editMode = true;
+      this.$root.editMode = true;
     },
     leaveEditMode() {
       this.logSystem.debug(`Switching to view mode`);
-      this.editMode = false;
+      this.$root.editMode = false;
       this.editableDatasource = '';
       this.tempDatasource = {};
     },
