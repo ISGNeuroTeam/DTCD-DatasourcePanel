@@ -32,7 +32,8 @@
             ref="query"
             :style="{ width: '100%' }"
             theme="resize_off"
-            data-autoheight
+            data-autoheight 
+            @keydown.ctrl.\="newLine"
           ></base-textarea>
         </div>
       </div>
@@ -99,6 +100,9 @@ export default {
         cache_ttl: 60,
       };
     },
+    newLine () {
+      this.$refs.query.value = this.tempValue.queryString.split("|").join('\n \|').slice(1);
+		}
   },
 };
 </script>
