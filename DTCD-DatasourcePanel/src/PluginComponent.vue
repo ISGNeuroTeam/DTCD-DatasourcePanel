@@ -4,7 +4,7 @@
       v-if="!$root.editMode"
       :datasources="datasources"
       @runDataSource="runDataSource"
-      @createDatasource="createDatasource"
+      @createDatasource="openDSForm"
       @editDatasource="editDatasource"
       @deleteDatasource="deleteDatasource"
     />
@@ -57,9 +57,9 @@ export default {
         `Editing datasource '${datasource}': ${JSON.stringify(this.tempDatasource)}`
       );
       this.$root.nameEditableDatasource = datasource;
-      this.createDatasource();
+      this.openDSForm();
     },
-    createDatasource() {
+    openDSForm() {
       this.logSystem.debug(`Switching to editMode`);
       this.$root.editMode = true;
     },
