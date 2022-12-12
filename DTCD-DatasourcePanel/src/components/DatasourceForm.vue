@@ -7,10 +7,10 @@
           @click="leaveEditMode"
           class="button-icon FontIcon name_chevronBigDown rotate_90 size_md"
         ></span>
-        {{ dsFormData.name ? 'Редактирование' : 'Создание' }} источника данных
+        {{ datasourceName ? 'Редактирование' : 'Создание' }} источника данных
       </div>
       <div class="modal-body">
-        <div v-if="!dsFormData.name" class="form-field">
+        <div v-if="!datasourceName" class="form-field">
           <base-input
             label="Название"
             type="text"
@@ -48,7 +48,7 @@
     </div>
 
     <div class="modal-footer">
-      <base-button @click="save"> {{ dsFormData.name ? 'Сохранить' : 'Создать' }}</base-button>
+      <base-button @click="save"> {{ datasourceName ? 'Сохранить' : 'Создать' }}</base-button>
     </div>
   </div>
 </template>
@@ -61,21 +61,19 @@ export default {
     datasourceName: String,
   },
   data() {
-    const data = {
-      name: this.datasourceName || '',
+    const defaultFormData = {
+      name: '',
       queryString: '',
       cache_ttl: 60,
       type: 'otl',
+      ...this.$root.dsFormData,
     };
-    if (this.datasource instanceof Object) this.datasource = {};
+
+    Object.assign(this.$root.dsFormData, defaultFormData);
+    if (this.datasource instanceof Object) Object.assign(this.$root.dsFormData, this.datasource);
+
     return {
-      dsFormData: {
-        name: this.datasourceName || '',
-        queryString: '',
-        cache_ttl: 60,
-        type: 'otl',
-        ...this.datasource,
-      },
+      dsFormData: this.$root.dsFormData,
     };
   },
   methods: {
@@ -84,7 +82,7 @@ export default {
       this.resetForm();
     },
     save() {
-      if (!this.dsFormData.name) return;
+      if (!this.datasourceName && !this.dsFormData.name) return;
       if (this.dsFormData.cache_ttl < 1) return;
       if (!this.dsFormData.queryString) return;
 
@@ -94,10 +92,11 @@ export default {
       this.leaveEditMode();
     },
     resetForm() {
-      this.dsFormData = {
+      this.$root.dsFormData = {
         name: '',
         queryString: '',
         cache_ttl: 60,
+        type: 'otl',
       };
     },
   },

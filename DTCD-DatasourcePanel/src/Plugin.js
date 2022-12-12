@@ -65,6 +65,8 @@ export class Plugin extends PanelPlugin {
       styleSystem: this.styleSystem,
 
       editMode: false,
+      dsFormData: {},
+      nameEditableDatasource: '',
     };
 
     logSystem.debug(`Creating Vue instance in ${pluginMeta.name} plugin`);
@@ -143,6 +145,8 @@ export class Plugin extends PanelPlugin {
   getState() {
     return {
       editMode: this.#vueComponent.editMode,
+      dsFormData: this.#vueComponent.dsFormData,
+      nameEditableDatasource: this.#vueComponent.nameEditableDatasource,
     };
   }
 
@@ -151,6 +155,8 @@ export class Plugin extends PanelPlugin {
 
     const vueNamesFields = [
       'editMode',
+      'dsFormData',
+      'nameEditableDatasource',
     ];
 
     for (const [prop, value] of Object.entries(newState)) {

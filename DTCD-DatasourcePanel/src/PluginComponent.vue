@@ -11,7 +11,7 @@
     <DatasourceForm
       v-else
       :datasource="tempDatasource"
-      :datasourceName="editableDatasource"
+      :datasourceName="$root.nameEditableDatasource"
       @saveDatasource="saveDatasource"
       @leaveEditMode="leaveEditMode"
     />
@@ -37,7 +37,6 @@ export default {
         runOnTokenChange: false,
       },
       tempDatasource: {},
-      editableDatasource: '',
     };
   },
   mounted() {
@@ -57,7 +56,7 @@ export default {
       this.logSystem.debug(
         `Editing datasource '${datasource}': ${JSON.stringify(this.tempDatasource)}`
       );
-      this.editableDatasource = datasource;
+      this.$root.nameEditableDatasource = datasource;
       this.createDatasource();
     },
     createDatasource() {
@@ -67,7 +66,7 @@ export default {
     leaveEditMode() {
       this.logSystem.debug(`Switching to view mode`);
       this.$root.editMode = false;
-      this.editableDatasource = '';
+      this.$root.nameEditableDatasource = '';
       this.tempDatasource = {};
     },
     saveDatasource(datasourceObject) {
@@ -82,10 +81,10 @@ export default {
       } else {
         this.logSystem.debug(
           `Saving existing datasource '${
-            this.editableDatasource
+            this.$root.nameEditableDatasource
           }' with new params: ${JSON.stringify(datasourceObject)}`
         );
-        this.datasourceSystem.editDataSource(this.editableDatasource, datasourceObject);
+        this.datasourceSystem.editDataSource(this.$root.nameEditableDatasource, datasourceObject);
       }
       this.datasources = Object.assign({}, this.datasourceSystem.getDataSourceList());
     },
