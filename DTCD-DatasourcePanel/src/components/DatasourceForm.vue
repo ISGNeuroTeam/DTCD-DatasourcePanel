@@ -101,8 +101,8 @@ export default {
       };
     },
     newLine () {
-      this.$refs.query.value = this.tempValue.queryString.split("|").join('\n \|').slice(1);
-		}
+      this.$refs.query.value = this.$refs.query.value.split("|").join('\n \|').slice(1);
+		},
   },
 };
 </script>
