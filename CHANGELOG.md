@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - autoheight in textarea
 - plugin state API
+- hotkey for wrapping multiline request
 
 ## [0.6.0]
 

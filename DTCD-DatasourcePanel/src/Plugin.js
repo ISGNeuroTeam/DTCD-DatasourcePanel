@@ -65,7 +65,12 @@ export class Plugin extends PanelPlugin {
       styleSystem: this.styleSystem,
 
       editMode: false,
-      dsFormData: {},
+      dsFormData: {
+        name: '',
+        queryString: '',
+        cache_ttl: 60,
+        type: 'otl',
+      },
       nameEditableDatasource: '',
     };
 

@@ -41,7 +41,8 @@
             :value="dsFormData.queryString"
             @input="(event) => {this.dsFormData.queryString = event.target.value}"
             theme="resize_off"
-            data-autoheight
+            data-autoheight 
+            @keydown.ctrl.\="newLine"
           ></base-textarea>
         </div>
       </div>
@@ -61,15 +62,6 @@ export default {
     datasourceName: String,
   },
   data() {
-    const defaultFormData = {
-      name: '',
-      queryString: '',
-      cache_ttl: 60,
-      type: 'otl',
-      ...this.$root.dsFormData,
-    };
-
-    Object.assign(this.$root.dsFormData, defaultFormData);
     if (this.datasource instanceof Object) Object.assign(this.$root.dsFormData, this.datasource);
 
     return {
@@ -99,6 +91,9 @@ export default {
         type: 'otl',
       };
     },
+    newLine () {
+      this.dsFormData.queryString = this.dsFormData.queryString.split('|').join('\n\|').slice(1);
+		},
   },
 };
 </script>
