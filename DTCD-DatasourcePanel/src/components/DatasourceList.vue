@@ -93,7 +93,9 @@ export default {
       this.$emit('createDatasource');
     },
     deleteDatasource(datasource) {
-      this.$emit('deleteDatasource', datasource);
+      if (confirm('Вы действительно хотите удалить источник данных?')) {
+        this.$emit('deleteDatasource', datasource);
+      } 
     },
     nextPage() {
       if (this.currentPage < this.pageCount - 1) this.currentPage++;
