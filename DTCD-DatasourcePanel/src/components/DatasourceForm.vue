@@ -5,7 +5,8 @@
         <span 
           :style="{ marginRight: '6px' }"
           @click="leaveEditMode"
-          class="button-icon FontIcon name_chevronBigDown rotate_90 size_md"></span>
+          class="button-icon FontIcon name_chevronBigDown rotate_90 size_md"
+        ></span>
         {{ datasourceName ? 'Редактирование' : 'Создание' }} источника данных
       </div>
       <div class="modal-body">
@@ -14,7 +15,8 @@
             label="Название"
             type="text"
             placeholder="Введите название"
-            ref="datasourceName"
+            :value="dsFormData.name"
+            @input="(event) => {this.dsFormData.name = event.target.value}"
           ></base-input>
         </div>
         <div class="form-field">
@@ -23,6 +25,12 @@
             type="number"
             placeholder="Введите значение ttl"
             ref="ttl"
+            :value="dsFormData.cache_ttl"
+            @input="(event) => {
+              this.dsFormData.cache_ttl = event.target.value
+                                        ? Number.parseInt(event.target.value)
+                                        : 0;
+            }"
           ></base-input>
         </div>
         <div class="form-field">
@@ -30,7 +38,7 @@
             :disabled="!!datasourceName"
             label="Тип запроса"
             @input="setType"
-            :value="tempValue.type"
+            :value="dsFormData.type"
           >
             <div
               v-for="item in dataSourceTypesList"
@@ -44,16 +52,18 @@
         </div>
         <div class="form-field">
           <base-textarea
-            :label="tempValue.type ===  'otlrw' ? 'Запрос для чтения данных' : 'Запрос'"
+            :label="dsFormData.type ===  'otlrw' ? 'Запрос для чтения данных' : 'Запрос'"
             placeholder="Введите запрос"
             ref="query"
-            :style="{ width: '100%' }"
+            :value="dsFormData.queryString"
+            @input="(event) => {this.dsFormData.queryString = event.target.value}"
             theme="resize_off"
             data-autoheight
+            @keydown.ctrl.\="newLine"
           ></base-textarea>
         </div>
         <div
-          v-if="tempValue.type ===  'otlrw'"
+          v-if="dsFormData.type ===  'otlrw'"
           class="form-field"
         >
           <base-textarea
@@ -87,26 +97,16 @@ export default {
     }
   },
   data() {
+    if (this.datasource instanceof Object) Object.assign(this.$root.dsFormData, this.datasource);
+
     return {
-      tempValue: {
-        queryString: '',
-        cache_ttl: 60,
-        type: 'otl',
-      },
+      dsFormData: this.$root.dsFormData,
     };
   },
   mounted() {
-    if (this.datasourceName) {
-      this.tempValue = {
-        ...this.datasource,
-      };
-    }
-    this.$refs.ttl.value = this.tempValue.cache_ttl;
-    this.$refs.query.value = this.tempValue.queryString;
-
-    if (this.tempValue.type === 'otlrw' && this.tempValue.queryWriteString) {
+   if (this.dsFormData.type === 'otlrw' && this.dsFormData.queryWriteString) {
       this.$nextTick(() => {
-        this.$refs.queryWrite.value = this.tempValue.queryWriteString
+        this.$refs.queryWrite.value = this.dsFormData.queryWriteString
       })
 
     }
@@ -114,42 +114,38 @@ export default {
   methods: {
     leaveEditMode() {
       this.$emit('leaveEditMode');
-      this.clearTempValue();
+      this.resetForm();
     },
     save() {
-      if (!this.$refs.query.value) return;
+      if (!this.datasourceName && !this.dsFormData.name) return;
+      if (this.dsFormData.cache_ttl < 1) return;
+      if (!this.dsFormData.queryString) return;
 
-      this.tempValue.queryString = this.$refs.query.value;
-
-      if (this.tempValue.type === 'otlrw' ) {
-        this.tempValue.queryWriteString = this.$refs.queryWrite.value
-      } else if (this.tempValue?.queryWriteString !== '') {
-        delete this.tempValue.queryWriteString
+      if (this.dsFormData.type === 'otlrw' ) {
+        this.dsFormData.queryWriteString = this.$refs.queryWrite.value
+      } else if (this.dsFormData?.queryWriteString !== '') {
+        delete this.dsFormData.queryWriteString
       }
 
-      if (this.$refs.ttl.value) {
-        this.tempValue.cache_ttl = Number.parseInt(this.$refs.ttl.value);
-        if (this.tempValue.cache_ttl < 1) return;
-      } else delete this.tempValue.cache_ttl;
-
-      if (!this.datasourceName) {
-        if (!this.$refs.datasourceName.value) return;
-        this.tempValue.name = this.$refs.datasourceName.value;
-      }
-
-      this.tempValue.queryString.trim();
-      this.$emit('saveDatasource', this.tempValue);
+      this.dsFormData.name.trim();
+      this.dsFormData.queryString.trim();
+      this.$emit('saveDatasource', this.dsFormData);
       this.leaveEditMode();
     },
-    clearTempValue() {
-      this.tempValue = {
+    resetForm() {
+      this.$root.dsFormData = {
+        name: '',
         queryString: '',
         cache_ttl: 60,
+        type: 'otl',
       };
     },
     setType(e) {
-      this.tempValue.type = e.target.value;
+      this.dsFormData.type = e.target.value;
     },
+    newLine () {
+      this.dsFormData.queryString = this.dsFormData.queryString.split('|').join('\n\|').slice(1);
+		},
   },
 };
 </script>

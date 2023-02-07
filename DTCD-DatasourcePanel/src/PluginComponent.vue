@@ -1,17 +1,17 @@
 <template>
   <div style="height: 100%" class="panel-wrapper">
     <DatasourceList
-      v-if="!editMode"
+      v-if="!$root.editMode"
       :datasources="datasources"
       @runDataSource="runDataSource"
-      @createDatasource="createDatasource"
+      @createDatasource="openDSForm"
       @editDatasource="editDatasource"
       @deleteDatasource="deleteDatasource"
     />
     <DatasourceForm
       v-else
       :datasource="tempDatasource"
-      :datasourceName="editableDatasource"
+      :datasourceName="$root.nameEditableDatasource"
       :dataSourceTypesList="dataSourceTypesList"
       @saveDatasource="saveDatasource"
       @leaveEditMode="leaveEditMode"
@@ -37,9 +37,7 @@ export default {
         autorun: false,
         runOnTokenChange: false,
       },
-      editMode: false,
       tempDatasource: {},
-      editableDatasource: '',
     };
   },
   computed: {
@@ -59,7 +57,7 @@ export default {
     this.logSystem.debug(`Loading datasources to panel: ${JSON.stringify(this.datasources)}`);
     if (this.$root.isModal) {
       this.logSystem.debug(`Opening panel in modal mode`);
-      this.editMode = true;
+      this.$root.editMode = true;
     }
   },
 
@@ -73,17 +71,17 @@ export default {
       this.logSystem.debug(
         `Editing datasource '${datasource}': ${JSON.stringify(this.tempDatasource)}`
       );
-      this.editableDatasource = datasource;
-      this.createDatasource();
+      this.$root.nameEditableDatasource = datasource;
+      this.openDSForm();
     },
-    createDatasource() {
+    openDSForm() {
       this.logSystem.debug(`Switching to editMode`);
-      this.editMode = true;
+      this.$root.editMode = true;
     },
     leaveEditMode() {
       this.logSystem.debug(`Switching to view mode`);
-      this.editMode = false;
-      this.editableDatasource = '';
+      this.$root.editMode = false;
+      this.$root.nameEditableDatasource = '';
       this.tempDatasource = {};
     },
     saveDatasource(datasourceObject) {
@@ -98,10 +96,10 @@ export default {
       } else {
         this.logSystem.debug(
           `Saving existing datasource '${
-            this.editableDatasource
+            this.$root.nameEditableDatasource
           }' with new params: ${JSON.stringify(datasourceObject)}`
         );
-        this.datasourceSystem.editDataSource(this.editableDatasource, datasourceObject);
+        this.datasourceSystem.editDataSource(this.$root.nameEditableDatasource, datasourceObject);
       }
       this.datasources = Object.assign({}, this.datasourceSystem.getDataSourceList());
     },
