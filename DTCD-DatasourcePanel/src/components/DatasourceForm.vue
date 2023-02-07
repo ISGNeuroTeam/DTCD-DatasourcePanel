@@ -50,6 +50,7 @@
             </div>
           </base-select>
         </div>
+
         <div class="form-field">
           <base-textarea
             :label="dsFormData.type ===  'otlrw' ? 'Запрос для чтения данных' : 'Запрос'"
