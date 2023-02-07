@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - autoheight in textarea
+- add support otlrw plugin
 - plugin state API
 - hotkey for wrapping multiline request
 - form delete confirmation

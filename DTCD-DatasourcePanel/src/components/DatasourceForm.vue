@@ -34,15 +34,46 @@
           ></base-input>
         </div>
         <div class="form-field">
+          <base-select
+            :disabled="!!datasourceName"
+            label="Тип запроса"
+            @input="setType"
+            :value="dsFormData.type"
+          >
+            <div
+              v-for="item in dataSourceTypesList"
+              :key="item"
+              slot="item"
+              :value="item"
+            >
+              {{ item }}
+            </div>
+          </base-select>
+        </div>
+
+        <div class="form-field">
           <base-textarea
-            label="Запрос"
+            :label="dsFormData.type ===  'otlrw' ? 'Запрос для чтения данных' : 'Запрос'"
             placeholder="Введите запрос"
             ref="query"
             :value="dsFormData.queryString"
             @input="(event) => {this.dsFormData.queryString = event.target.value}"
             theme="resize_off"
-            data-autoheight 
+            data-autoheight
             @keydown.ctrl.\="newLine"
+          ></base-textarea>
+        </div>
+        <div
+          v-if="dsFormData.type ===  'otlrw'"
+          class="form-field"
+        >
+          <base-textarea
+            label="Запрос для записи данных"
+            placeholder="Введите запрос"
+            ref="queryWrite"
+            :style="{ width: '100%' }"
+            theme="resize_off"
+            data-autoheight
           ></base-textarea>
         </div>
       </div>
@@ -60,6 +91,11 @@ export default {
   props: {
     datasource: Object,
     datasourceName: String,
+
+    dataSourceTypesList: {
+      type: Array,
+      required: true,
+    }
   },
   data() {
     if (this.datasource instanceof Object) Object.assign(this.$root.dsFormData, this.datasource);
@@ -67,6 +103,14 @@ export default {
     return {
       dsFormData: this.$root.dsFormData,
     };
+  },
+  mounted() {
+   if (this.dsFormData.type === 'otlrw' && this.dsFormData.queryWriteString) {
+      this.$nextTick(() => {
+        this.$refs.queryWrite.value = this.dsFormData.queryWriteString
+      })
+
+    }
   },
   methods: {
     leaveEditMode() {
@@ -77,6 +121,12 @@ export default {
       if (!this.datasourceName && !this.dsFormData.name) return;
       if (this.dsFormData.cache_ttl < 1) return;
       if (!this.dsFormData.queryString) return;
+
+      if (this.dsFormData.type === 'otlrw' ) {
+        this.dsFormData.queryWriteString = this.$refs.queryWrite.value
+      } else if (this.dsFormData?.queryWriteString !== '') {
+        delete this.dsFormData.queryWriteString
+      }
 
       this.dsFormData.name.trim();
       this.dsFormData.queryString.trim();
@@ -90,6 +140,9 @@ export default {
         cache_ttl: 60,
         type: 'otl',
       };
+    },
+    setType(e) {
+      this.dsFormData.type = e.target.value;
     },
     newLine () {
       this.dsFormData.queryString = this.dsFormData.queryString.split('|').join('\n\|').slice(1);
