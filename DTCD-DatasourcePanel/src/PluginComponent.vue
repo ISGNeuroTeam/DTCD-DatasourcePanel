@@ -12,6 +12,7 @@
       v-else
       :datasource="tempDatasource"
       :datasourceName="editableDatasource"
+      :dataSourceTypesList="dataSourceTypesList"
       @saveDatasource="saveDatasource"
       @leaveEditMode="leaveEditMode"
     />
@@ -41,6 +42,18 @@ export default {
       editableDatasource: '',
     };
   },
+  computed: {
+    dataSourceTypesList() {
+      const dataSourceTypesList = this.datasourceSystem.dataSourceTypes
+      if (
+        dataSourceTypesList instanceof Array
+        && dataSourceTypesList.length > 0
+      ) {
+        return dataSourceTypesList.map((type) => type.toLowerCase())
+      }
+        return this.dataSourceTypesList = ['otl'];
+    }
+  },
   mounted() {
     this.datasources = this.datasourceSystem.getDataSourceList();
     this.logSystem.debug(`Loading datasources to panel: ${JSON.stringify(this.datasources)}`);
@@ -54,7 +67,9 @@ export default {
     editDatasource(datasource) {
       this.tempDatasource = {
         ...this.datasources[datasource].datasourceParams,
+        type: this.datasources[datasource].type
       };
+
       this.logSystem.debug(
         `Editing datasource '${datasource}': ${JSON.stringify(this.tempDatasource)}`
       );

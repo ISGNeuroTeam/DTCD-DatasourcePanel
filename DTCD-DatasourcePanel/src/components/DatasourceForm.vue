@@ -26,10 +26,40 @@
           ></base-input>
         </div>
         <div class="form-field">
+          <base-select
+            :disabled="!!datasourceName"
+            label="Тип запроса"
+            @input="setType"
+            :value="tempValue.type"
+          >
+            <div
+              v-for="item in dataSourceTypesList"
+              :key="item"
+              slot="item"
+              :value="item"
+            >
+              {{ item }}
+            </div>
+          </base-select>
+        </div>
+        <div class="form-field">
           <base-textarea
-            label="Запрос"
+            :label="tempValue.type ===  'otlrw' ? 'Запрос для чтения данных' : 'Запрос'"
             placeholder="Введите запрос"
             ref="query"
+            :style="{ width: '100%' }"
+            theme="resize_off"
+            data-autoheight
+          ></base-textarea>
+        </div>
+        <div
+          v-if="tempValue.type ===  'otlrw'"
+          class="form-field"
+        >
+          <base-textarea
+            label="Запрос для записи данных"
+            placeholder="Введите запрос"
+            ref="queryWrite"
             :style="{ width: '100%' }"
             theme="resize_off"
             data-autoheight
@@ -50,6 +80,11 @@ export default {
   props: {
     datasource: Object,
     datasourceName: String,
+
+    dataSourceTypesList: {
+      type: Array,
+      required: true,
+    }
   },
   data() {
     return {
@@ -68,6 +103,13 @@ export default {
     }
     this.$refs.ttl.value = this.tempValue.cache_ttl;
     this.$refs.query.value = this.tempValue.queryString;
+
+    if (this.tempValue.type === 'otlrw' && this.tempValue.queryWriteString) {
+      this.$nextTick(() => {
+        this.$refs.queryWrite.value = this.tempValue.queryWriteString
+      })
+
+    }
   },
   methods: {
     leaveEditMode() {
@@ -78,6 +120,12 @@ export default {
       if (!this.$refs.query.value) return;
 
       this.tempValue.queryString = this.$refs.query.value;
+
+      if (this.tempValue.type === 'otlrw' ) {
+        this.tempValue.queryWriteString = this.$refs.queryWrite.value
+      } else if (this.tempValue?.queryWriteString !== '') {
+        delete this.tempValue.queryWriteString
+      }
 
       if (this.$refs.ttl.value) {
         this.tempValue.cache_ttl = Number.parseInt(this.$refs.ttl.value);
@@ -98,6 +146,9 @@ export default {
         queryString: '',
         cache_ttl: 60,
       };
+    },
+    setType(e) {
+      this.tempValue.type = e.target.value;
     },
   },
 };
