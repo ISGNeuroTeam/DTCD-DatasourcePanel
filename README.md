@@ -2,6 +2,12 @@
 
 Panel plugin of [DTCD](https://github.com/ISGNeuroTeam/DTCD) application for CRUD actions with DataSource objects.
 
+### Description
+#### Hotkeys
+
+ctrl+\ - wrapping multiline request
+
+
 ## Getting Started
 
 In order to use this plugin you need to download it, build and move build-file to _plugins_ folder on DTCD server.

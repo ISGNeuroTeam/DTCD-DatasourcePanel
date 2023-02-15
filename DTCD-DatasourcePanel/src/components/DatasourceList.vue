@@ -36,10 +36,7 @@
         class="datasource-item"
     >
       <div class="datasource-title">
-        <StatusCircle
-          :color="statusColors[datasources[datasource].status]"
-          class="status-icon"
-        />
+        <StatusCircle :type="datasources[datasource].status"/>
         <div>
           {{ datasource }}
         </div>
@@ -71,16 +68,10 @@ export default {
   props: {
     datasources: { type: Array, default: [] },
   },
-  data({ $root }) {
+  data() {
     return {
-      styleSystem: $root.styleSystem,
       currentPage: 0,
       rowLimit: 10,
-      statusColors: {
-        failed: '#FF3B30',
-        success: '#4CD964',
-        new: '#F8B407',
-      },
     };
   },
   computed: {
@@ -102,7 +93,9 @@ export default {
       this.$emit('createDatasource');
     },
     deleteDatasource(datasource) {
-      this.$emit('deleteDatasource', datasource);
+      if (confirm('Вы действительно хотите удалить источник данных?')) {
+        this.$emit('deleteDatasource', datasource);
+      } 
     },
     nextPage() {
       if (this.currentPage < this.pageCount - 1) this.currentPage++;
@@ -138,13 +131,17 @@ export default {
   }
   .header {
     display: flex;
-    padding: 5px 10px;
+    flex-wrap: wrap;
+    gap: 10px;
+    padding: 10px;
 
     justify-content: space-between;
 
     .right-block {
       display: flex;
       align-items: center;
+      gap: 5px;
+      flex-wrap: wrap;
 
       .active-arrow {
         color: var(--button_primary);
@@ -157,9 +154,11 @@ export default {
   }
 
   .datasource-item {
-    padding: 5px 10px;
     display: flex;
     justify-content: space-between;
+    flex-wrap: wrap;
+    column-gap: 10px;
+    padding: 5px 10px;
     box-shadow: inset 0px -1px 0px var(--border);
 
     &:hover {
@@ -168,12 +167,15 @@ export default {
 
     .datasource-title {
       display: flex;
+      gap: 6px;
       align-items: center;
       font-weight: 700;
+    }
 
-      .status-icon {
-        margin-right: 6px;
-      }
+    .button-block {
+      display: flex;
+      align-items: center;
+      gap: 5px;
     }
   }
 }

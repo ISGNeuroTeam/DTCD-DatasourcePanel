@@ -1,3 +1,13 @@
+## [0.7.0] - 2023-02-07
+
+### Added
+
+- autoheight in textarea
+- add support otlrw plugin
+- plugin state API
+- hotkey for wrapping multiline request
+- form delete confirmation
+ 
 # [0.6.0] - 2022-11-02
 
 ### Changed
