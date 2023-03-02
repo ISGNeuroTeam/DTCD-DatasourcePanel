@@ -145,13 +145,17 @@ export default {
       this.dsFormData.type = e.target.value;
     },
     newLine () {
-      let line = this.dsFormData.queryString.split('|').join('\n\|');
-      
-      if (this.dsFormData.queryString[0] == "|") {
-        this.dsFormData.queryString = line.slice(1);
-      } else {
-        this.dsFormData.queryString = line;
-      } 
+      if(!this.addLine) {
+
+        let line = this.dsFormData.queryString.split('|').join('\n\|');
+        
+        if (this.dsFormData.queryString[0] == "|") {
+          this.dsFormData.queryString = line.slice(1);
+        } else {
+          this.dsFormData.queryString = line;
+        } 
+        this.addLine = true;
+      }
     }, 
   },
 };

@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - removing of letters when wrapping to another line
+- infinite line wrapping when hotkey is pressed
 
 ## [0.7.0]
 
