@@ -60,7 +60,7 @@
             @input="(event) => {this.dsFormData.queryString = event.target.value}"
             theme="resize_off"
             data-autoheight
-            @keydown.ctrl.\="newLine"
+            @keydown.ctrl.\="addLineBreaks"
           ></base-textarea>
         </div>
         <div
@@ -144,15 +144,18 @@ export default {
     setType(e) {
       this.dsFormData.type = e.target.value;
     },
-    newLine () {
-      let line = this.dsFormData.queryString.split('|').join('\n\|');
-      
-      if (this.dsFormData.queryString[0] == "|") {
-        this.dsFormData.queryString = line.slice(1);
-      } else {
-        this.dsFormData.queryString = line;
-      } 
-    }, 
+
+    addLineBreaks () {
+      this.dsFormData.queryString = this.dsFormData.queryString.replaceAll('|','\n|');
+
+      if (this.dsFormData.queryString[0] == '\n') {
+        this.dsFormData.queryString = this.dsFormData.queryString.substring(1);
+      };
+
+      this.dsFormData.queryString = this.dsFormData.queryString.replaceAll('\n\n|','\n|');
+      this.dsFormData.queryString = this.dsFormData.queryString.replaceAll('|\n','| ');
+      this.dsFormData.queryString = this.dsFormData.queryString.replaceAll('| \n','| ');
+    },
   },
 };
 </script>
