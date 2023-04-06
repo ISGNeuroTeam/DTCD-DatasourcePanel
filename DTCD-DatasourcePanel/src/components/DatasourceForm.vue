@@ -58,8 +58,6 @@
             ref="query"
             :value="dsFormData.queryString"
             @input="(event) => {this.dsFormData.queryString = event.target.value}"
-            theme="resize_off"
-            data-autoheight
             @keydown.ctrl.\="addLineBreaks"
           ></base-textarea>
         </div>
@@ -72,8 +70,6 @@
             placeholder="Введите запрос"
             ref="queryWrite"
             :style="{ width: '100%' }"
-            theme="resize_off"
-            data-autoheight
           ></base-textarea>
         </div>
       </div>
