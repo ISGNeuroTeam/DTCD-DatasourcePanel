@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [UNRELEASED]
 
+### Changed
+
+- textarea size for correct content editing
+
 ### Fixed
 
 - removing of letters when wrapping to another line
