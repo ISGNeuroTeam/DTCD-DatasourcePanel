@@ -10,13 +10,21 @@
         {{ datasourceName ? 'Редактирование' : 'Создание' }} источника данных
       </div>
       <div class="modal-body">
-        <div v-if="!datasourceName" class="form-field">
+        <div class="form-field">
           <base-input
+            v-if="!datasourceName"
             label="Название"
             type="text"
             placeholder="Введите название"
             :value="dsFormData.name"
-            @input="(event) => {this.dsFormData.name = event.target.value}"
+            @input="dsFormData.name = $event.target.value"
+          ></base-input>
+          <base-input
+            v-else
+            label="Название"
+            type="text"
+            :value="datasourceName"
+            disabled
           ></base-input>
         </div>
         <div class="form-field">
@@ -71,7 +79,7 @@
             ></base-textarea>
           </base-code-editor>
         </div>
-        
+
         <div
           v-if="dsFormData.type ===  'otlrw'"
           class="form-field"
