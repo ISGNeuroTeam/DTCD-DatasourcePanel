@@ -52,25 +52,46 @@
         </div>
 
         <div class="form-field">
-          <base-textarea
+          <base-code-editor
             :label="dsFormData.type ===  'otlrw' ? 'Запрос для чтения данных' : 'Запрос'"
-            placeholder="Введите запрос"
-            ref="query"
+            rows="4"
+            data-autoheight
+            data-language-mode="otl"
             :value="dsFormData.queryString"
-            @input="(event) => {this.dsFormData.queryString = event.target.value}"
-            @keydown.ctrl.\="addLineBreaks"
-          ></base-textarea>
+            @change="dsFormData.queryString = $event.target.value"
+          >
+            <!-- Deprecated -->
+            <base-textarea
+              :label="dsFormData.type ===  'otlrw' ? 'Запрос для чтения данных' : 'Запрос'"
+              placeholder="Введите запрос"
+              ref="query"
+              :value="dsFormData.queryString"
+              @input="(event) => {this.dsFormData.queryString = event.target.value}"
+              @keydown.ctrl.\="addLineBreaks"
+            ></base-textarea>
+          </base-code-editor>
         </div>
+        
         <div
           v-if="dsFormData.type ===  'otlrw'"
           class="form-field"
         >
-          <base-textarea
+          <base-code-editor
             label="Запрос для записи данных"
-            placeholder="Введите запрос"
-            ref="queryWrite"
-            :style="{ width: '100%' }"
-          ></base-textarea>
+            rows="4"
+            data-autoheight
+            data-language-mode="otl"
+            :value="dsFormData.queryWriteString"
+            @change="dsFormData.queryWriteString = $event.target.value"
+          >
+            <!-- Deprecated -->
+            <base-textarea
+              label="Запрос для записи данных"
+              placeholder="Введите запрос"
+              :value="dsFormData.queryWriteString"
+              @input="dsFormData.queryWriteString = $event.target.value"
+            ></base-textarea>
+          </base-code-editor>
         </div>
       </div>
     </div>
@@ -100,14 +121,6 @@ export default {
       dsFormData: this.$root.dsFormData,
     };
   },
-  mounted() {
-   if (this.dsFormData.type === 'otlrw' && this.dsFormData.queryWriteString) {
-      this.$nextTick(() => {
-        this.$refs.queryWrite.value = this.dsFormData.queryWriteString
-      })
-
-    }
-  },
   methods: {
     leaveEditMode() {
       this.$emit('leaveEditMode');
@@ -118,14 +131,10 @@ export default {
       if (this.dsFormData.cache_ttl < 1) return;
       if (!this.dsFormData.queryString) return;
 
-      if (this.dsFormData.type === 'otlrw' ) {
-        this.dsFormData.queryWriteString = this.$refs.queryWrite.value
-      } else if (this.dsFormData?.queryWriteString !== '') {
-        delete this.dsFormData.queryWriteString
-      }
-
       this.dsFormData.name.trim();
       this.dsFormData.queryString.trim();
+      this.dsFormData.queryWriteString && this.dsFormData.queryWriteString.trim();
+
       this.$emit('saveDatasource', this.dsFormData);
       this.leaveEditMode();
     },
@@ -133,6 +142,7 @@ export default {
       this.$root.dsFormData = {
         name: '',
         queryString: '',
+        queryWriteString: '',
         cache_ttl: 60,
         type: 'otl',
       };
@@ -141,6 +151,7 @@ export default {
       this.dsFormData.type = e.target.value;
     },
 
+    // Deprecated
     addLineBreaks () {
       this.dsFormData.queryString = this.dsFormData.queryString.replaceAll('|','\n|');
 
